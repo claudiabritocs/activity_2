@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
 
 import CriarTarefa from './CriarTarefa';
 import EditarTarefa from './EditarTarefa';
@@ -49,6 +50,8 @@ const ListarTarefa = () => {
   const [tarefas, setTarefas] = useState([]);
   const [tarefa, setTarefa] = useState();
   const [idTarefaSelecionada, setIdTarefaSelecionada] = useState([]);
+  const [filtro, setFiltro] = useState(''); // Estado para armazenar o valor do filtro
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleOpenEditar = () => setOpenEditar(true);
@@ -82,7 +85,14 @@ const ListarTarefa = () => {
     );
   };
 
-    return(
+  // Função para aplicar o filtro às tarefas
+  const aplicarFiltro = (tarefas, filtro) => {
+    return tarefas.filter(tarefa => {
+      return tarefa.tituloTarefa.toLowerCase().includes(filtro.toLowerCase());
+    });
+  };
+
+  return(
     <>
     <Card>
         <CardHeader
@@ -90,6 +100,15 @@ const ListarTarefa = () => {
           subheader="Listagem de Tarefas"
         /> 
         <CardContent>
+            <TextField
+              id="filtro"
+              label="Filtrar por Título"
+              variant="outlined"
+              fullWidth
+              value={filtro}
+              onChange={(e) => setFiltro(e.target.value)}
+              sx={{ marginBottom: '20px' }}
+            />
             <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                 <TableHead>
@@ -106,7 +125,7 @@ const ListarTarefa = () => {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {tarefas.map((row, indice) => (
+                {aplicarFiltro(tarefas, filtro).map((row, indice) => (
                     <TableRow
                     key={indice}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
